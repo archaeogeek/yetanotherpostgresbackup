@@ -1,5 +1,5 @@
 # import modules
-import pg, os, sys, shutil
+import pg, os, sys, shutil, subprocess
 from datetime import date
 import ConfigParser
 
@@ -125,7 +125,7 @@ class databaseBackup():
 				cmd=self.pg_dump_path +' --host=%s --username=%s --port=%d -F c -b -C -c %s > %s' % (self.host, self.username, self.port, db, self.local_file)
 				try:
 					self.out.OutputInfo("Backing up database %s" % db)
-					res = os.popen(cmd)
+					res = subprocess.call(cmd, shell=True)
 					self.out.OutputInfo("PG_Dump ran successfully on %s." % db) 
 				except (KeyboardInterrupt, SystemExit):
 					self.out.OutputError("Keyboard interrupt detected. Script aborting")
