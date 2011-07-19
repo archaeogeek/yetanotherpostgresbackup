@@ -69,9 +69,9 @@ class ClassData:
 			self._conn = pg.connect( host=sHost, user=sUser, dbname=sDatabase, passwd=sPwd, port= sPort)
     
 		except KeyboardInterrupt:
-			Out.OutputError('Keyboard interrupt detected', False )
+			self._output.OutputError('Keyboard interrupt detected', False )
 			raise
-    
+			    
 		except:
 			self._output.OutputError( 'On connecting to Postgres DB',True)
 			self._output.OutputException( sys.exc_info( ), True)
@@ -94,7 +94,7 @@ class ClassData:
 			self._conn.close( )
     
 		except KeyboardInterrupt:
-			Out.OutputError( 'Keyboard interrupt detected', False )
+			self._output.OutputError( 'Keyboard interrupt detected', False )
 			raise
     
 		except:
