@@ -102,50 +102,60 @@ class databaseBackup():
 
 		try:
 			self._conn = self._Data.OpenPostgres()
-		
+			# see what databases are actually on this server (ignoring template databases, and the postgis/postgres special ones)
+			sSelSQL = "SELECT datname FROM pg_database WHERE datistemplate = 'f' AND datname NOT LIKE '%postgis%' AND datname NOT LIKE 'postgres'"
+			q_sql = self._conn.query(sSelSQL)
+			res= q_sql.getresult()
+   		except (KeyboardInterrupt, SystemExit):
+        		raise
 		except:
-			print "I cannot connect to the supplied database"
-			self.out.OutputError("Problem connecting to database %s." % self.dbname) 
-			self._Data.ClosePostgres()
+			self.out.OutputError("Problem connecting with the given credentials. See error log for details. Backup aborting.") 
 			sys.exit(1)
 
-		# see what databases are actually on this server (ignoring template databases, and the postgis/postgres special ones)
-		sSelSQL = "SELECT datname FROM pg_database WHERE datistemplate = 'f' AND datname NOT LIKE '%postgis%' AND datname NOT LIKE 'postgres'"
-		q_sql = self._conn.query(sSelSQL)
-		res= q_sql.getresult()
+		
 
 		# iterate through list of databases and run pg_dump with appropriate options
-		for row in res:
-			db = row[0]
-			self.encodingcheck(db)
-			self.dump_file = db +'_' + self.dateStr + '.backup'
-			self.local_file = self.local_locn + self.dump_file
+		try:
+			for row in res:
+				db = row[0]
+				self.encodingcheck(db)
+				self.dump_file = db +'_' + self.dateStr + '.backup'
+				self.local_file = self.local_locn + self.dump_file
 	
-			try:
 				cmd=self.pg_dump_path +' --host=%s --username=%s --port=%d -F c -b -C -c %s > %s' % (self.host, self.username, self.port, db, self.local_file)
-				res = os.system(cmd)
-				self.out.OutputInfo("PG_Dump ran successfully on %s." % db) 
-			except:
-				self.out.OutputError("Problem running PG_Dump on %s." % db) 
-				self.email_subject = "Local Backup Failed"
-				self.email_body = "The local backup of database %s failed on %s" % (db, self.dateStr)
-				self.sendmail.sendEmail(email_subject, email_body)
-				self._Data.ClosePostgres()
-				sys.exit(1)
-			finally:
-				self.fileCopy(db)
-		self._Data.ClosePostgres()
-		return		
-	
+				try:
+					self.out.OutputInfo("Backing up database %s" % db)
+					res = os.popen(cmd)
+					self.out.OutputInfo("PG_Dump ran successfully on %s." % db) 
+				except (KeyboardInterrupt, SystemExit):
+					self.out.OutputError("Keyboard interrupt detected. Script aborting")
+        				raise
+				except:
+					self.out.OutputError("Problem running PG_Dump on %s." % db) 
+					self.email_subject = "Local Backup Failed"
+					self.email_body = "The local backup of database %s failed on %s" % (db, self.dateStr)
+					self.sendmail.sendEmail(email_subject, email_body)
+					self._Data.ClosePostgres()
+					sys.exit(1)
+				finally:
+					self.fileCopy(db)
+			self._Data.ClosePostgres()
+			return		
+		except (KeyboardInterrupt, SystemExit):
+        		raise
 
 
 def main():
-
- 	gothunderbirdsgo = databaseBackup()
-	gothunderbirdsgo.backup()
+	try:
+		gothunderbirdsgo = databaseBackup()
+		gothunderbirdsgo.backup()
+	except (KeyboardInterrupt, SystemExit):
+		raise
 
 if __name__ == "__main__":
-    main()
+ 	
+	main()
+	
 
 
 
