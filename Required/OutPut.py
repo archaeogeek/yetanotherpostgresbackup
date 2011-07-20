@@ -1,4 +1,4 @@
-## Copyright (c) 2009 Astun Technology
+## Copyright (c) 2011 Astun Technology
 
 ## Permission is hereby granted, free of charge, to any person obtaining a copy
 ## of this software and associated documentation files (the "Software"), to deal
@@ -19,11 +19,6 @@
 ## THE SOFTWARE.
 
 ### Output.py - Class to output various information to output stream, and to log to file
-
-# $Workfile: Output.py $
-# $Revision: 1 $
-# $Modtime: 16/12/09 10:10 $
-# $Author: Jonathan $ 
 
 # Import system stuff
 import datetime
