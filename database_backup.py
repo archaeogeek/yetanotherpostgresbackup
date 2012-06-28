@@ -24,6 +24,7 @@
 import pg, os, sys, shutil, subprocess
 from datetime import date
 import ConfigParser
+from optparse import OptionParser
 
 #astun
 from Required import ConfigParse, Email, OutPut, Data, CleanUp
@@ -32,12 +33,20 @@ class databaseBackup():
 
 	def __init__(self):
 		
+		desc ="""Back up all databases on a definted host and port to defined local and/or remote locations.
+		Email comments if backup fails, and remove old backups after a defined number of days. 
+		Usage: database_backup.py -f filename"""
+		parser=OptionParser(description = desc)
+		parser.add_option("-f","--file", dest="filename")
+		(options, args) = parser.parse_args()
+		self.options = options
+		
 		# get today's date
 		now = date.today()
 		self.dateStr = now.isoformat()
 		
 		# generic config
-		opts = ConfigParse.OptParser()
+		opts = ConfigParse.ConfParser()
 		dbcreds = opts.ConfigSectionMap('DatabaseConnection')
 		backupcreds = opts.ConfigSectionMap('BackupCreds')
 
@@ -73,10 +82,10 @@ class databaseBackup():
 				shutil.copy(self.local_file, self.remote_file)
 				os.remove(self.local_file)
 				self.out.OutputInfo("Successfully copied %s to remote location %s." % (self.local_file, self.remote_locn))
-				self.out.OutputInfo("Remote backup of database %s succeeded on %s." % (dbf, self.dateStr))			
+				self.out.OutputInfo("Remote backup of database %s succeeded on %s." % (dbf, self.dateStr))
 				self.cleanup.FileCleanup(dbf, self.remote_locn)
 			except:
-				self.out.OutputError("Could not copy file %s to remote location %s." % (self.local_file, self.remote_locn) )
+				self.out.OutputError("Could not copy file %s to remote location %s." % (self.local_file, self.remote_locn))
 				email_subject = "Remote Backup Failed"
 				email_body = "The remote backup of database %s failed on %s" % (dbf, self.dateStr)
 				self.sendmail.sendEmail(email_subject, email_body)
@@ -101,7 +110,7 @@ class databaseBackup():
 			if client_encode != db_encode:
 				try:
 					os.putenv('PGCLIENTENCODING','UTF8')
-					self.out.OutputInfo("Temporarily changing PGCLIENTENCODING variable.")				
+					self.out.OutputInfo("Temporarily changing PGCLIENTENCODING variable.")
 				except:
 					self.out.OutputError("Could not change client encoding. Backup aborted.")
 					email_subject = "Backup aborted"
@@ -125,7 +134,7 @@ class databaseBackup():
 		try:
 			self._conn = self._Data.OpenPostgres()
 			# see what databases are actually on this server (ignoring template databases, and the postgis/postgres special ones)
-			sSelSQL = "SELECT datname FROM pg_database WHERE datistemplate = 'f' AND datname NOT LIKE '%postgis%' AND datname NOT LIKE 'postgres'"
+			sSelSQL = "SELECT datname FROM pg_database WHERE datistemplate = 'f' AND datname NOT LIKE '%postgis%' OR datname NOT LIKE 'postgres'"
 			q_sql = self._conn.query(sSelSQL)
 			res= q_sql.getresult()
    		except (KeyboardInterrupt, SystemExit):

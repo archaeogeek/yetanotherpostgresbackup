@@ -1,19 +1,21 @@
 [DatabaseConnection]
+#dbname can be any database on your system that the defined user has access to
 host = localhost
-username = postgres
-password = grespost
+username = 
+password = 
 port=5432
 dbname = template1
 
 [BackupCreds]
-local_locn = /home/jo/Documents/
-#remote_locn = /home/jo/Dropbox/
+#comment out the remote_locn if not required
+local_locn = 
+#remote_locn = 
 remote_locn = 
-pg_dump_path = "/usr/bin/pg_dump"
+pg_dump_path = ""
 days = 1
 
 # comment out the email section if email options are not required (in that case will output to console only at present)
 [Email]
-email_sender = backup@localhost
-email_recip = jo@localhost
-smtp_address = localhost
+email_sender = 
+email_recip = 
+smtp_address = 

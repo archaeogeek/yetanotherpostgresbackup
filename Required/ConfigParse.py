@@ -22,24 +22,14 @@
 
 # import modules
 import ConfigParser
-from optparse import OptionParser
 
-class OptParser():
+class ConfParser():
 
-	def __init__(self):
-		parser=OptionParser()
-		parser.add_option("-f","--file", dest="filename")
-		(options, args) = parser.parse_args()
-		self.options = options
-
-	def ConfigSectionMap(self, section):
+	def ConfigSectionMap(self, section, filename="config.ini"):
 		"""Generic function for parsing options in a config file and returning a dictionary of the results"""
 
-   		file_name = self.options.filename
-		
-		
 		Config = ConfigParser.ConfigParser()
-		Config.read(file_name)
+		Config.read(filename)
 		dict1 = {}
     		options = Config.options(section)
     		for option in options:

@@ -37,7 +37,7 @@ class ClassCleanUp:
 		self.dateStr = now.isoformat()
 
 		# generic config
-		opts = ConfigParse.OptParser()
+		opts = ConfigParse.ConfParser()
 		backupcreds = opts.ConfigSectionMap('BackupCreds')
 
 

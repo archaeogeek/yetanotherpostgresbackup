@@ -34,7 +34,7 @@ class ClassData:
   
 
 	def __init__(self, Out):
- 		opts = ConfigParse.OptParser()   
+ 		opts = ConfigParse.ConfParser()   
 		dbcreds = opts.ConfigSectionMap('DatabaseConnection')
 
 		self.dbname = dbcreds['dbname']

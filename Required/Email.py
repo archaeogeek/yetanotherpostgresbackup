@@ -31,7 +31,7 @@ class sendEmail():
 
 	def __init__(self, Out):
 		
-		opts = ConfigParse.OptParser()
+		opts = ConfigParse.ConfParser()
 		
 		#Output
 		self.out = Out
