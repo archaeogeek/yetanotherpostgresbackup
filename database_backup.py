@@ -71,6 +71,12 @@ class databaseBackup():
 		self.username = dbcreds['username']
 		self.password = dbcreds['password']
 		self.port = int(dbcreds['port'])
+		
+	def ExtraErrorHandling(self):
+		'''generic function for printing error message before exiting script'''
+		e = sys.exc_info()[1]
+		print "Error: %s" % e 
+		sys.exit(1)
 
 
 	def fileCopy(self, dbf):
@@ -143,7 +149,8 @@ class databaseBackup():
 			self.out.OutputError("Problem connecting with the given credentials. See error log for details. Backup aborting.") 
 			sys.exit(1)
 
-		
+		#set the PGPASSWORD environment variable
+		os.putenv('PGPASSWORD', self.password)
 
 		# iterate through list of databases and run pg_dump with appropriate options
 		try:
@@ -161,7 +168,7 @@ class databaseBackup():
 				except (KeyboardInterrupt, SystemExit):
 					self.out.OutputError("Keyboard interrupt detected. Script aborting")
         				raise
-				except:
+				except: #this needs to deal with when the pg_dump command asks for a password because there's no appropriate pgpass file- otherwise it doesn't time out or anything useful
 					self.out.OutputError("Problem running PG_Dump on %s." % db) 
 					self.email_subject = "Local Backup Failed"
 					self.email_body = "The local backup of database %s failed on %s" % (db, self.dateStr)
