@@ -159,6 +159,8 @@ class databaseBackup():
 				self.encodingcheck(db)
 				self.dump_file = db +'_' + self.dateStr + '.backup'
 				self.local_file = self.local_locn + self.dump_file
+				dbnostr = db.replace(' ','_',1)
+				self.dump_file = dbnostr +'_' + self.dateStr + '.backup'
 	
 				cmd=self.pg_dump_path +' --host=%s --username=%s --port=%d -F c -b -C -c %s > %s' % (self.host, self.username, self.port, db, self.local_file)
 				try:
