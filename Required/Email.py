@@ -22,7 +22,18 @@
 
 # import modules
 import smtplib
-from email.MIMEText import MIMEText
+import email
+import email.mime.text
+import email.mime.base
+import email.mime.multipart
+import email.iterators
+import email.generator
+import email.utils
+
+try:    
+    from email.MIMEText import MIMEText
+except:    
+    from email.mime import text as MIMEText
 
 #Astun
 import OutPut, ConfigParse
@@ -45,7 +56,7 @@ class sendEmail():
 			self.email_recip = self.emailcreds['email_recip']
 			self.smtp_address = self.emailcreds['smtp_address']
 	
-			msg = MIMEText(email_body)
+			msg = MIMETEXT(email_body)
 			msg['Subject'] = email_subject
 			msg['From'] = self.email_sender
 			msg['Reply-to'] = self.email_sender
