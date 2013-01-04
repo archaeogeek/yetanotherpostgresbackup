@@ -18,30 +18,38 @@
 ## OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 ## THE SOFTWARE.
 
-### ConfigParse.py - Class to parse a configuration file and return results back to python script
+### ConfigParse.py - Class to parse a configuration file and return results
+### back to python script
 
 # import modules
-import ConfigParser
+import ConfigParser  # lint:ok
+
 
 class ConfParser():
 
-	def ConfigSectionMap(self, section, filename="config.ini"):
-		"""Generic function for parsing options in a config file and returning a dictionary of the results"""
+    def ConfigSectionMap(self, section, filename="config.ini",):
+        """Generic function for parsing options in a config file and returning
+        a dictionary of the results"""
+        Config = ConfigParser.ConfigParser()
+        Config.read(filename)
+        dict1 = {}
+        options = Config.options(section)
+        for option in options:
+            try:
+                dict1[option] = Config.get(section, option)
+                if dict1[option] == -1:
+                    print("skip: %s" % option)
+            except:
+                print("exception on %s!" % option)
+                dict1[option] = None
 
-		Config = ConfigParser.ConfigParser()
-		Config.read(filename)
-		dict1 = {}
-    		options = Config.options(section)
-    		for option in options:
-        		try:
-           			dict1[option] = Config.get(section, option)
-            			if dict1[option] == -1:
-                			DebugPrint("skip: %s" % option)
-        		except:
-           			print("exception on %s!" % option)
-            			dict1[option] = None    
- 
-		return dict1
+        return dict1
+
+
+
+
+
+
 
 
 
