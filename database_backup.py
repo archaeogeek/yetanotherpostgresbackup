@@ -58,6 +58,8 @@ class databaseBackup():
         self.local_locn = backupcreds['local_locn']
 
         #Output to log file
+        outputcreds = opts.ConfigSectionMap('Output')
+        self.outputlevel = outputcreds['outputlevel']
         self.out = OutPut.ClassOutput('Dbf_BU')
 
         #Cleanup
@@ -131,8 +133,13 @@ class databaseBackup():
 
         #set up logging
         self._sName = '%s_backup' % self.dateStr
-        self.out.SetFilename(self._sName + '.log')
-        self.out.SetOutputLevel(OutPut.OUTPUTLEVEL_INFO)
+        self.out.SetFilename( self._sName + '.log' )
+        if self.outputlevel == 'INFO':
+            self.out.SetOutputLevel(OutPut.OUTPUTLEVEL_INFO)
+        elif self.outputlevel == 'ERROR':
+            self.out.SetOutputLevel(OutPut.OUTPUTLEVEL_ERROR)
+        else:
+            self.out.SetOutputLevel(OutPut.OUTPUTLEVEL_DEBUG)
         self.out.SetFileLogging(True)
         self.out.OutputInfo('___________________________')
         self.out.OutputInfo('Database Backup starting')

@@ -6,4 +6,5 @@ syntax: glob
 Logs/*.*
 *.zip
 *.csv
+*.nja
 dist/Logs/*.*
