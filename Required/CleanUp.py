@@ -34,20 +34,22 @@ import ConfigParse
 
 class ClassCleanUp:
 
-    def __init__(self, Out):
+    def __init__(self, Out, filename):
         # get today's date
         now = date.today()
         self.dateStr = now.isoformat()
 
         # generic config
-        opts = ConfigParse.ConfParser()
-        backupcreds = opts.ConfigSectionMap('BackupCreds')
+        self.filename = filename
+        opts = ConfigParse.ConfParser(filename = self.filename)
+        backupcreds = opts.ConfigSectionMap(filename = self.filename, section='BackupCreds')
 
         #Days to keep files for
         self.days = int(backupcreds['days'])
 
         #Output
         self.out = Out
+
 
     def OlderThan(self, days, ftime):
         """Function for returning a date in the past given today's date and a

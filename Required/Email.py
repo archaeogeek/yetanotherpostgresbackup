@@ -40,9 +40,9 @@ import OutPut, ConfigParse
 
 class sendEmail():
 
-	def __init__(self, Out):
-		
-		opts = ConfigParse.ConfParser()
+	def __init__(self, Out, filename):
+		self.filename = filename
+		opts = ConfigParse.ConfParser(self.filename)
 		
 		#Output
 		self.out = Out
@@ -51,7 +51,7 @@ class sendEmail():
 		""" Function for sending email given a sender, recipient, reply-to, subject, and body"""
 		
 		try:
-			self.emailcreds = opts.ConfigSectionMap('Email')
+			self.emailcreds = opts.ConfigSectionMap(filename = self.filename, section ='Email')
 			self.email_sender = self.emailcreds['email_sender']
 			self.email_recip = self.emailcreds['email_recip']
 			self.smtp_address = self.emailcreds['smtp_address']

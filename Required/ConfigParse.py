@@ -27,11 +27,14 @@ import ConfigParser  # lint:ok
 
 class ConfParser():
 
-    def ConfigSectionMap(self, section, filename="config.ini",):
+    def __init__(self, filename):
+        self.filename = filename
+
+    def ConfigSectionMap(self, section, filename):
         """Generic function for parsing options in a config file and returning
         a dictionary of the results"""
         Config = ConfigParser.ConfigParser()
-        Config.read(filename)
+        Config.read(self.filename)
         dict1 = {}
         options = Config.options(section)
         for option in options:

@@ -35,9 +35,10 @@ class ClassData:
 
     conn1 = 0
 
-    def __init__(self, Out):
-        opts = ConfigParse.ConfParser()
-        dbcreds = opts.ConfigSectionMap('DatabaseConnection')
+    def __init__(self, Out, filename):
+        self.filename = filename
+        opts = ConfigParse.ConfParser(self.filename)
+        dbcreds = opts.ConfigSectionMap(filename = self.filename, section='DatabaseConnection')
 
         self.dbname = dbcreds['dbname']
         self.host = dbcreds['host']
@@ -71,7 +72,7 @@ class ClassData:
             sPort = self.port
 
             # Now connect
-            self._conn = pg.connect(host=sHost, user=sUser, dbname=sDatabase, passwd=sPwd, port= sPort)
+            self._conn = pg.connect(host=sHost, user=sUser, dbname=sDatabase, passwd=sPwd, port=sPort)
 
         except KeyboardInterrupt:
             self._output.OutputError('Keyboard interrupt detected', False)

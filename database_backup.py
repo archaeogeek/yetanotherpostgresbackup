@@ -42,15 +42,16 @@ class databaseBackup():
         parser.add_option("-f", "--file", dest="filename")
         (options, args) = parser.parse_args()
         self.options = options
+        self.filename = options.filename
 
         # get today's date
         now = date.today()
         self.dateStr = now.isoformat()
 
         # generic config
-        opts = ConfigParse.ConfParser()
-        dbcreds = opts.ConfigSectionMap('DatabaseConnection')
-        backupcreds = opts.ConfigSectionMap('BackupCreds')
+        opts = ConfigParse.ConfParser(filename=self.filename)
+        dbcreds = opts.ConfigSectionMap(filename=self.filename, section='DatabaseConnection')
+        backupcreds = opts.ConfigSectionMap(filename=self.filename, section='BackupCreds')
 
         #Backup
         self.pg_dump_path = backupcreds['pg_dump_path']
@@ -58,18 +59,18 @@ class databaseBackup():
         self.local_locn = backupcreds['local_locn']
 
         #Output to log file
-        outputcreds = opts.ConfigSectionMap('Output')
+        outputcreds = opts.ConfigSectionMap(filename= self.filename, section='Output')
         self.outputlevel = outputcreds['outputlevel']
         self.out = OutPut.ClassOutput('Dbf_BU')
 
         #Cleanup
-        self.cleanup = CleanUp.ClassCleanUp(self.out)
+        self.cleanup = CleanUp.ClassCleanUp(self.out, self.filename)
 
         #Email
-        self.sendmail = Email.sendEmail(self.out)
+        self.sendmail = Email.sendEmail(self.out, self.filename)
 
         #Database Connection
-        self._Data = Data.ClassData(self.out)
+        self._Data = Data.ClassData(self.out, self.filename)
         self.host = dbcreds['host']
         self.username = dbcreds['username']
         self.password = dbcreds['password']
