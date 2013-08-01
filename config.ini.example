@@ -14,6 +14,13 @@ remote_locn =
 pg_dump_path = ""
 days = 1
 
+[Output]
+outputlevel:INFO
+
+#ERROR
+#INFO
+#DEBUG
+
 # comment out the email section if email options are not required (in that case will output to console only at present)
 [Email]
 email_sender = 
