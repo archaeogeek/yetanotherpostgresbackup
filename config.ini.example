@@ -7,9 +7,8 @@ port=5432
 dbname = template1
 
 [BackupCreds]
-#comment out the remote_locn if not required
+#leave remote location blank if not required
 local_locn = 
-#remote_locn = 
 remote_locn = 
 pg_dump_path = ""
 days = 1
