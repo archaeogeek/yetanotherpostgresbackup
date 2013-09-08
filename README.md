@@ -22,7 +22,7 @@ Tested with python 2.6 but should/may work with 2.5+. Should work with windows a
 
 **Usage**
 
-    python databasebackup.py -c config.ini
+    python databasebackup.py -f config.ini
 
 **Caveats**
 
